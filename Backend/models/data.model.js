@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { mainDBConnection } = require("../config/database");
 const Schema = mongoose.Schema;
 
 const dataSchema = new Schema({
@@ -20,5 +21,7 @@ const dataSchema = new Schema({
   title: { type: String, required: true },
   likelihood: { type: Number, required: true },
 });
-const DataModel = mongoose.model("data", dataSchema);
+const DataModel = mainDBConnection.model("data", dataSchema, "data");
+DataModel.findOne().then((data) => console.log(data));
+
 module.exports = DataModel;

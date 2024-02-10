@@ -1,62 +1,98 @@
 const DataModel = require("../models/data.model");
 
 class DataController {
-  async getJsonFiles(req, res) {
+  async Intensity(req, res) {
     try {
-      if (!Boolean(req.body.cid)) {
-        res.status(200).json({ status: false, message: "Missing data" });
-      } else {
-        let files = await IPFS.prototype.getJSON(req.body.cid);
-        res
-          .status(200)
-          .json({ status: 200, metadata: files.array, urls: files.urls });
-      }
-    } catch (err) {
-      console.log(err);
-      error(err, req);
-      res.status(500).send("server error!");
-    }
-  }
-  async isCollectionExistByURI(req, res) {
-    try {
-      const { URI } = req.params;
-      const params = {
-        TableName: "puffles",
-        KeyConditionExpression: "#URI=:URI",
-        ExpressionAttributeNames: { "#URI": ":URI" },
-        ExpressionAttributeValues: { ":URI": URI },
-      };
-      const data = await DatabaseHelper.prototype.getItems(params);
-      if (data === undefined) {
-        res.json({ status: false });
-      } else {
-        res.json(data.Items[0].URI_status);
-      }
-    } catch (err) {
-      error(err, req);
-      res.status(500).send("server error!");
-    }
-  }
-
-  async isCollectionEXistByURL(req, res) {
-    try {
-      const { urlString } = req.params;
-      const params = {
-        TableName: "puffles",
-        KeyConditionExpression:
-          "#PK=:PK and #url=:url and begins_with(#SK,:SK)",
-        ExpressionAttributeNames: { "#PK": "PK", "#SK": ":SK", "#url": ":url" },
-        ExpressionAttributeValues: {
-          ":PK": `ADR#${req.user.address}`,
-          ":SK": "PGE#",
-          ":url": urlString,
+      let sector = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$sector",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
         },
-      };
-      const data = await DatabaseHelper.prototype.getItems(params);
-      res.json(data.length > 0);
+      ]);
+      let topic = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$topic",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let insight = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$insight",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let region = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$region",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let start_year = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$start_year",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let end_year = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$end_year",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let country = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$country",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let pestle = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$pestle",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+      let source = await DataModel.aggregate([
+        {
+          $group: {
+            _id: "$source",
+            totalLikelihood: { $sum: "$likelihood" },
+          },
+        },
+      ]);
+
+      res
+        .status(200)
+        .json({
+          data: {
+            sector,
+            topic,
+            insight,
+            region,
+            start_year,
+            end_year,
+            country,
+            pestle,
+            source,
+          },
+        });
     } catch (err) {
-      error(err, req);
-      res.status(500).send("server error!");
+      res.status(500).json({ status: false, message: "Server error occurred" });
     }
   }
 }
