@@ -16,7 +16,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
 
-export const Intensity = () => {
+export const Likelihood = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(false);
   const [field, setField] = useState("sector");
@@ -37,7 +37,7 @@ export const Intensity = () => {
       },
       title: {
         display: true,
-        text: `Intensity according to ${field}`,
+        text: `Likelihood according to ${field}`,
       },
       zoom: {
         // Zoom options
@@ -62,7 +62,7 @@ export const Intensity = () => {
     async function fetchData() {
       setIsLoading(true);
       let chartData = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}data/intensity`
+        `${process.env.REACT_APP_BACKEND_URL}data/likelihood`
       );
       setData(chartData.data.data);
       setIsLoading(false);
@@ -75,7 +75,7 @@ export const Intensity = () => {
       {isLoading ? (
         <Skeleton
           animation="wave"
-          variant="rectangular"
+          variant="likelihood"
           width={1300}
           height={500}
         />
@@ -121,8 +121,8 @@ export const Intensity = () => {
                   }),
                   datasets: [
                     {
-                      label: "Intensity", // Add label for the dataset
-                      data: data[field].map((row) => row.totalIntensity),
+                      label: "Likelihood", // Add label for the dataset
+                      data: data[field].map((row) => row.totalLikelihood),
                       backgroundColor: "rgba(255, 9, 9, 0.5)", // Add background color if needed
                       borderColor: "rgba(255, 99, 132, 1)", // Add border color if needed
                       borderWidth: 1, // Add border width if needed

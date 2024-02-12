@@ -16,9 +16,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import { Intensity } from "./charts/Intensity";
+import { Likelihood } from "./charts/Likelihood";
+import { Relevance } from "./charts/Relevance";
+import { Year } from "./charts/Year";
+import { Country } from "./charts/Country";
+import { Topics } from "./charts/Topics";
+import { Region } from "./charts/Region";
 
 const drawerWidth = 160;
 
@@ -70,6 +75,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function PersistentDrawerLeft() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [topic, setTopic] = useState("Intensity");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -121,18 +127,21 @@ export default function PersistentDrawerLeft() {
         <List>
           {[
             "Intensity",
-            "Likelyhood",
+            "Likelihood",
             "Relevance",
             "Year",
             "Country",
             "Topics",
             "Region",
-            "City",
           ].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
+            <ListItem
+              key={text}
+              disablePadding
+              className={text === topic && "bg-red-300"}
+            >
+              <ListItemButton onClick={() => setTopic(text)}>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
@@ -142,7 +151,13 @@ export default function PersistentDrawerLeft() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <Intensity />
+        {topic === "Intensity" && <Intensity />}
+        {topic === "Likelihood" && <Likelihood />}
+        {topic === "Relevance" && <Relevance />}
+        {topic === "Year" && <Year />}
+        {topic === "Country" && <Country />}
+        {topic == "Topics" && <Topics />}
+        {topic == "Region" && <Region />}
       </Main>
     </Box>
   );
